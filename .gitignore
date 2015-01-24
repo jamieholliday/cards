@@ -1,0 +1,6 @@
+logs/*
+node_modules/
+app/vendor
+public/views
+public/app.js
+.DS_Store
