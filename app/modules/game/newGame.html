@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Enter your name</h1> 
+            <form name="createDetails" novalidate>
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input class="form-control" type="text" ng-model="newGame.player.name" required>
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Create Game" ng-click="newGame.createNewGame(createDetails.$valid)" ng-disabled="createDetails.$invalid">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
