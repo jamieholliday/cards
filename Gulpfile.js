@@ -21,6 +21,7 @@
             'app/vendor/angular-ui-router/release/angular-ui-router.js',
             'app/vendor/firebase/firebase.js',
             'app/vendor/angularfire/dist/angularfire.js',
+            'app/vendor/angular-local-storage/dist/angular-local-storage.js',
             'app/main.js',
             'app/modules/**/*.js'
         ]
