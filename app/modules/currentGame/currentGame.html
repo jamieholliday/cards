@@ -1,1 +1,23 @@
-<h1>current game</h1>
+<div class="container" ng-if="currentGame.newUser">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Enter your name</h1> 
+            <form name="currentGameDetails" novalidate>
+                <div class="form-inline">
+                    <div class="form-group">
+                        <input class="form-control" type="text" ng-model="currentGame.player.name" required>
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Create Game" ng-click="currentGame.joinGame(currentGameDetails.$valid)" ng-disabled="currentGameDetails.$invalid">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="container" ng-if="!currentGame.newUser">
+    <div class="row">
+        <div class="col-md-12">
+            currentgame
+        </div>
+    </div>
+</div>

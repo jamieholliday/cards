@@ -16,15 +16,10 @@ angular.module('cards', ['ui.router', 'firebase', 'LocalStorageModule'])
 			templateUrl: 'views/newGame.html',
 			controller: 'newGameCtrl as newGame'
 		})
-        .state('joinGame', {
-            url: '/join/:gameId',
-            templateUrl: 'views/joinGame.html',
-            controller: 'joinGameCtrl as joinGame'
-        })
         .state('currentGame', {
             url: '/game/:gameId',
             templateUrl: 'views/currentGame.html',
             controller: 'currentGameCtrl as currentGame'
-        })
+        });
         
 });

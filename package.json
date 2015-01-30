@@ -4,7 +4,7 @@
   "devDependencies": {
     "angular": "~1.2.16",
     "browser-sync": "^1.9.1",
-    "gulp": "~3.6.2",
+    "gulp": "~3.8.10",
     "gulp-autoprefixer": "0.0.7",
     "gulp-concat": "~2.3.4",
     "gulp-flatten": "0.0.2",
