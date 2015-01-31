@@ -16,13 +16,18 @@
 				_assignPlayerToGame,
 				ref = new Firebase(FIREBASE_URL);
 
+		/**
+		 * Sets up a new game. 		Sets objects in Firebase and configs player in LocalStorage. Called when a new game is created
+		 * @param  {String} name 	Name of the player from form
+		 * @return {Promise}      	The result of setting up the game
+		 */
 		createNewGame = function createNewGame(name) {
 			var gameGuid = guidService.create();
 			var playerGuid = guidService.create();
 
 			return _createGame(gameGuid)
 			.then(function() {
-				return _createPlayer(name, playerGuid, gameGuid);
+				return _createPlayer(name, playerGuid, gameGuid, true);
 			})
 			.then(function() {
 				return _assignPlayerToGame(gameGuid, playerGuid);
@@ -33,6 +38,12 @@
 			});
 		};
 
+		/**
+		 * Creates anew player in Firebase and config in LocalStore. Called when a player is added to an existing game
+		 * @param  {String} name     	Name of player from form
+		 * @param  {Number} gameGuid 	Unique identifier of game
+		 * @return {Promise}          Result of setting user in system
+		 */
 		createNewPlayer = function createNewPlayer(name, gameGuid) {
 			var playerGuid = guidService.create();
 			return _createPlayer(name, playerGuid, gameGuid)
@@ -45,6 +56,11 @@
 			});
 		};
 
+		/**
+		 * Returns game object based on guid
+		 * @param  {Number} gameId Unique identifier of game
+		 * @return {Promise} Game object
+		 */
 		getGame = function getGame (gameId) {
 
 			return $firebase(ref.child('/games/'))
@@ -60,6 +76,11 @@
             });
 		};
 
+		/**
+		 * Returns user object based on game id and current user in id in LocalStorage
+		 * @param  {Number} game Unique game identifier
+		 * @return {Boolean}      If this player is in game
+		 */
 		getUser = function getUser (game) {
 			var playerId = localStorageService.get('playerId');
             if(game && playerId && game.players[playerId]) {
@@ -68,29 +89,53 @@
             return true;	
 		};
 
+		/**
+		 * Creates a new game object in Firebase
+		 * @param  {Number} guid Unique game identifier
+		 * @return {Promise}      Result of creating the game
+		 */
 		_createGame = function createGame(guid) {
-			//var ref = new Firebase(FIREBASE_URL + '/games/' + guid);
 			var sync = $firebase(ref.child('/games/' + guid));
 		    return sync.$set({
 		        createdAt: new Date().toString()
 		    });
 		};
 		
-		_createPlayer = function createPlayer(name, playerGuid, gameGuid) {
-			var ref = new Firebase(FIREBASE_URL + '/players/' + playerGuid);    
-		    return $firebase(ref).$set(
+		/**
+		 * Creates a new player object in Firebase
+		 * @param  {String}  name       Name of player from form
+		 * @param  {Number}  playerGuid Unique identifier of player
+		 * @param  {Number}  gameGuid   Unique identifier of game
+		 * @param  {Boolean} isLeader   Set to true is this player is first in th egame
+		 * @return {Promise}            Result of setting player in Firebase
+		 */
+		_createPlayer = function createPlayer(name, playerGuid, gameGuid, isLeader) {
+			var sync = $firebase(ref.child('/players/' + playerGuid)),
+				isCurrent;
+
+			isLeader = isLeader || false;
+			isCurrent = isLeader;
+
+		    return sync.$set(
 		        {
 		            gameId: gameGuid,
 		            name: name,
 		            score: 0,
-		            isCurrent: false
+		            isCurrent: false,
+		            isLeader: isLeader
 		        }
 		    );
 		} ;
 		
-		_assignPlayerToGame = function assignPlayerToGame(gameGuid, playerGuid) {
-			var ref = new Firebase(FIREBASE_URL + '/games/' + gameGuid).child('/players/' + playerGuid);    
-		    return $firebase(ref).$set({
+		/**
+		 * Assigns player to a game
+		 * @param  {Number} gameGuid   Unique game identifier
+		 * @param  {Number} playerGuid Unique player identifier
+		 * @return {Promise}            Result of adding plyer to game
+		 */	
+		_assignPlayerToGame = function assignPlayerToGame(gameGuid, playerGuid) {   
+			var sync = $firebase(ref.child('/games/' + gameGuid).child('/players/' + playerGuid)); 
+		    return sync.$set({
 		        createdAt: new Date().toString()
 		    });
 		};
