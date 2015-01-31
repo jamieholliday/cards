@@ -1,0 +1,67 @@
+html, body, .ui-container {
+	height: 100%;
+	position: relative;
+}
+
+body {
+	background: $very-light-grey;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.ui-container {
+	padding: 70px 0;
+}
+
+header {
+	background: $dark-grey;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	color: $very-light-grey;
+
+	.players {
+		text-align: right;
+		padding: 10px;
+	}
+}
+
+footer {
+	height: 50px;
+	position: fixed;
+	bottom: 0;
+	background: $dark-grey;
+	width: 100%;
+
+	.users {
+		display: flex;
+		padding: 0;
+
+		.icon {
+			font-size: 2.5rem;
+			line-height: 2rem;;
+		}
+
+		.name {
+			font-size: 1rem;
+		}
+
+		li {
+			padding: 7px 0;
+			list-style: none;
+			flex: 1 100%;
+			text-align: center;
+			border-left: 1px solid #fff;
+			color: $very-light-grey;
+			text-transform: uppercase;
+
+			&:first-child {
+				border-left: none;
+			}
+
+			&.selected {
+				color: blue;
+			}
+		}
+	}
+}

@@ -1,15 +1,18 @@
-<div class="container">
+<div class="container new-game">
     <div class="row">
         <div class="col-md-12">
-            <h1>Enter your name</h1> 
+            <h1>Cards Against Humanity Clone</h1>
             <form name="createDetails" novalidate>
-                <div class="form-inline">
+                <div>
                     <div class="form-group">
-                        <input class="form-control" type="text" ng-model="newGame.player.name" required>
+                        <input class="form-control" type="text" ng-model="newGame.player.name" required placeholder="Enter your name">
                     </div>
-                    <input type="submit" class="btn btn-success" value="Create Game" ng-click="newGame.createNewGame(createDetails.$valid)" ng-disabled="createDetails.$invalid">
+                    <input type="submit" class="btn btn-default btn-block" value="Create Game" ng-click="newGame.createNewGame(createDetails.$valid)" ng-disabled="createDetails.$invalid">
                 </div>
             </form>
+            <div class="disclaimer">
+                <p>This is a clone of the Cards Against Humanity game.<br> I borrowed there shit! They own the rights etc. </p> 
+            </div>
         </div>
     </div>
 </div>

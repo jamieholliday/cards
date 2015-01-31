@@ -11,7 +11,7 @@
             if(vaild) {
                 gameService.createNewGame(vm.player.name)
                 .then(function(gameGuid) {
-                    $state.go('checkGame', {gameId: gameGuid});
+                    $state.go('currentGame', {gameId: gameGuid});
                 });  
             }
         };   

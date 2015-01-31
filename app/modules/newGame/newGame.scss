@@ -1,0 +1,24 @@
+.new-game {
+	height: 100%;
+
+	.row, .col-md-12 {
+		height: 100%;
+	}
+
+	h1 {
+		text-align: center;
+		margin: 50px 0;
+		color: $mid-grey;
+	}
+
+	.disclaimer {
+		width: 100%;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		padding: 20px;
+		font-size: 1.2rem;
+		text-align: center;
+		color: lighten($mid-grey, 20%);
+	}
+}

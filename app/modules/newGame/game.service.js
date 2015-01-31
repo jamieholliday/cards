@@ -9,8 +9,7 @@
 				createNewPlayer,
 				getGame,
 				getUser,
-				getLocalPlayer,
-				setLocalPlayer,
+				startGame,
 				_createGame,
 				_createPlayer,
 				_assignPlayerToGame,
@@ -25,21 +24,20 @@
 			var gameGuid = guidService.create();
 			var playerGuid = guidService.create();
 
+			//TODO add a check in here to clear out old games from Firebase
+
 			return _createGame(gameGuid)
 			.then(function() {
 				return _createPlayer(name, playerGuid, gameGuid, true);
 			})
-			.then(function() {
-				return _assignPlayerToGame(gameGuid, playerGuid);
-			})
-			.then(function() {
+			.then(function(player) {
 				localStorageService.set('playerId', playerGuid);
 				return gameGuid;
 			});
 		};
 
 		/**
-		 * Creates anew player in Firebase and config in LocalStore. Called when a player is added to an existing game
+		 * Creates a new player in Firebase and config in LocalStore. Called when a player is added to an existing game
 		 * @param  {String} name     	Name of player from form
 		 * @param  {Number} gameGuid 	Unique identifier of game
 		 * @return {Promise}          Result of setting user in system
@@ -47,9 +45,6 @@
 		createNewPlayer = function createNewPlayer(name, gameGuid) {
 			var playerGuid = guidService.create();
 			return _createPlayer(name, playerGuid, gameGuid)
-			.then(function() {
-				return _assignPlayerToGame(gameGuid, playerGuid);
-			})
 			.then(function() {
 				localStorageService.set('playerId', playerGuid);
 				return true;
@@ -62,18 +57,8 @@
 		 * @return {Promise} Game object
 		 */
 		getGame = function getGame (gameId) {
-
-			return $firebase(ref.child('/games/'))
-            .$asObject()
-            .$loaded()
-            .then(function(games) {
-                if(games[gameId]) {
-                    return games[gameId];
-                    vm.newUser = checkforUser(currentGame);
-                } else {
-                   return false;
-                }
-            });
+			return $firebase(ref.child('/games/' + gameId))
+            .$asObject();
 		};
 
 		/**
@@ -84,9 +69,14 @@
 		getUser = function getUser (game) {
 			var playerId = localStorageService.get('playerId');
             if(game && playerId && game.players[playerId]) {
-                return false;
+                return game.players[playerId];
             } 
-            return true;	
+            return {};	
+		};
+
+		startGame = function startGame (game) {
+			game.started = true;
+			game.$save();
 		};
 
 		/**
@@ -109,42 +99,28 @@
 		 * @param  {Boolean} isLeader   Set to true is this player is first in th egame
 		 * @return {Promise}            Result of setting player in Firebase
 		 */
-		_createPlayer = function createPlayer(name, playerGuid, gameGuid, isLeader) {
-			var sync = $firebase(ref.child('/players/' + playerGuid)),
-				isCurrent;
+		_createPlayer = function createPlayer(name, playerGuid, gameGuid, isLeader) {   
+		 	var sync = $firebase(ref.child('/games/' + gameGuid).child('/players/' + playerGuid)),
+		 		isCurrent;
 
 			isLeader = isLeader || false;
 			isCurrent = isLeader;
 
-		    return sync.$set(
-		        {
-		            gameId: gameGuid,
-		            name: name,
-		            score: 0,
-		            isCurrent: false,
-		            isLeader: isLeader
-		        }
-		    );
-		} ;
-		
-		/**
-		 * Assigns player to a game
-		 * @param  {Number} gameGuid   Unique game identifier
-		 * @param  {Number} playerGuid Unique player identifier
-		 * @return {Promise}            Result of adding plyer to game
-		 */	
-		_assignPlayerToGame = function assignPlayerToGame(gameGuid, playerGuid) {   
-			var sync = $firebase(ref.child('/games/' + gameGuid).child('/players/' + playerGuid)); 
-		    return sync.$set({
-		        createdAt: new Date().toString()
-		    });
+			return sync.$set({
+		        name: name,
+		        score: 0,
+		        isCurrent: isCurrent,
+		        isLeader: isLeader
+			});
+
 		};
 
 		return {
 			createNewGame: createNewGame,
 			createNewPlayer: createNewPlayer,
 			getGame: getGame,
-			getUser: getUser
+			getUser: getUser,
+			startGame: startGame
 		};
 	}
 

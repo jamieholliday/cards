@@ -1,2 +1,6 @@
 //Use this file only for imports
 @import "vendor/bootstrap/dist/css/bootstrap";
+@import "modules/global/utils";
+@import "modules/global/global";
+@import "modules/newGame/newGame";
+@import "modules/currentGame/currentGame";
