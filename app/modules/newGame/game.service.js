@@ -17,6 +17,7 @@
 				_assignQuestionsAndAnswers,
 				_assignQuestionsToGame,
 				_assignAnswersToPlayers,
+				_getRandomNumberBetween,
 				ref = new Firebase(FIREBASE_URL);
 
 		/**
@@ -107,7 +108,6 @@
 			.then(function() {
 				return _assignAnswersToPlayers(game);
 			});
-
 		};
 
 		/**
@@ -135,12 +135,31 @@
 		 */
 		_assignAnswersToPlayers = function assignAnsersToUsers (game) {
 			ref.child('answers').once('value', function(snap) {
-				var answers = Object.keys(snap.val());
-				game.players.forEach(function() {
-					//TODO - loop through all the players and randomly assign them an equal number of answers
+				var answers = snap.val(),
+					answerKeys = Object.keys(answers),
+					numberOfPlayers = Object.keys(game.players).length,
+					numberOfAnswers = answerKeys.length,	
+					answersPerPlayer = Math.floor(numberOfAnswers / numberOfPlayers),
+					i;
+
+				Object.keys(game.players).forEach(function(player, i) {
+					var playerAnswers = [],
+						answerId,
+						position;
+					for (i = 0; i < answersPerPlayer; i++) {
+						position = _getRandomNumberBetween(0, answerKeys.length - 1);
+						answerId = answerKeys[position];
+						playerAnswers.push(answers[answerId]);
+						answerKeys.splice(position, 1);
+					}
+					game.players[player].answers = playerAnswers;
 				});
 				return game.$save();
 			});
+		};
+
+		_getRandomNumberBetween = function getRandomNumberBetween(start, end) {
+			return Math.floor(Math.random() * end) + start;
 		};
 
 		/**
