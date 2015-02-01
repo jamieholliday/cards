@@ -9,6 +9,7 @@
 				createNewPlayer,
 				getGame,
 				getUser,
+				getGameRef,
 				startGame,
 				_createGame,
 				_createPlayer,
@@ -79,6 +80,10 @@
 			game.$save();
 		};
 
+		getGameRef = function getGameRef(gameId) {
+			return ref.child('/games/' + gameId);
+		};
+
 		/**
 		 * Creates a new game object in Firebase
 		 * @param  {Number} guid Unique game identifier
@@ -120,7 +125,8 @@
 			createNewPlayer: createNewPlayer,
 			getGame: getGame,
 			getUser: getUser,
-			startGame: startGame
+			startGame: startGame,
+			getGameRef: getGameRef
 		};
 	}
 

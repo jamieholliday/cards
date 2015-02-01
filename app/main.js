@@ -20,6 +20,15 @@ angular.module('cards', ['ui.router', 'firebase', 'LocalStorageModule'])
             url: '/game/:gameId',
             templateUrl: 'views/currentGame.html',
             controller: 'currentGameCtrl as currentGame'
+        })
+        .state('currentGame.join', {
+            templateUrl: 'views/currentGame.join.html'
+        })
+        .state('currentGame.start', {
+            templateUrl: 'views/currentGame.start.html'
+        })
+        .state('currentGame.play', {
+            templateUrl: 'views/currentGame.play.html'
         });
         
 });
