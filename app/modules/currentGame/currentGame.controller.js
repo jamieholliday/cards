@@ -4,7 +4,7 @@
     angular.module('cards')
     .controller('currentGameCtrl', currentGame);
 
-    function currentGame($stateParams, $state, gameService, $scope) {
+    function currentGame($stateParams, $state, gameService, playService) {
         var vm = this,
             gameId = $stateParams.gameId,
             gotoNewGame,
@@ -39,9 +39,14 @@
         };
 
         vm.startGame = function() {
-            gameService.startGame(vm.game);
+            gameService.startGame(vm.game)
+            .then(function() {
             //$state.go('currentGame.play');
+            playService.askQuestion();
+            });
         };
+
+
 
         gotoNewGame = function gotoNewGame() {
             $state.go('newGame');
@@ -55,6 +60,7 @@
                     var user = gameService.getUser(currentGame);
                     if(user && user.name) {
                         vm.isLeader = user.isLeader;
+                        vm.isCurrent = user.isCurrent;
                         if(currentGame.started) {
                             $state.go('currentGame.play');
                         } else {

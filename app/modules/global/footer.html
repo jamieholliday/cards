@@ -1,8 +1,8 @@
 <footer>
 	<ul class="users">
-		<li ng-repeat="player in currentGame.game.players">
+		<li ng-repeat="player in currentGame.game.players" ng-class="player.isCurrent ? 'current' : ''">
 		<div class="icon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="score">{{player.score}}</span></div>
-		<div class="name">{{player.name}}</div>
+		<div class="name" >{{player.name}}</div>
 		</li>
 	</ul>
 </footer>

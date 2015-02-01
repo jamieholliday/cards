@@ -63,8 +63,8 @@ footer {
 				border-left: none;
 			}
 
-			&.selected {
-				color: blue;
+			&.current {
+				color: $light-blue;
 			}
 		}
 	}

@@ -1,9 +1,9 @@
 ;(function() {
 	'use strict';
 	angular.module('cards')
-	.factory('gameService', registerGame);
+	.factory('gameService', gameService);
 
-	function registerGame($firebase, FIREBASE_URL, localStorageService, guidService, $q) {
+	function gameService($firebase, FIREBASE_URL, localStorageService, guidService, $q) {
 
 			var createNewGame,
 				createNewPlayer,
