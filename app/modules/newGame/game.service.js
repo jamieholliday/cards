@@ -16,7 +16,7 @@
 				_assignPlayerToGame,
 				_assignQuestionsAndAnswers,
 				_assignQuestionsToGame,
-				_assignAnsersToPlayers,
+				_assignAnswersToPlayers,
 				ref = new Firebase(FIREBASE_URL);
 
 		/**
@@ -97,14 +97,24 @@
 			return ref.child('/games/' + gameId);
 		};
 
+		/**
+		 * Calles functions to assign questions and answers
+		 * @param  {Firebase Object} game Firebase game object
+		 * @return {Promise}      Result of assigning questions and answers
+		 */
 		_assignQuestionsAndAnswers = function assignQuestionsAndAnswers (game) {
 			return _assignQuestionsToGame(game)
 			.then(function() {
-				return _assignAnsersToPlayers(game);
+				return _assignAnswersToPlayers(game);
 			});
 
 		};
 
+		/**
+		 * Assigns Questions to the game 	
+		 * @param  {Firebase object} game Firebase game object
+		 * @return {Promise}      Result of saving game object
+		 */
 		_assignQuestionsToGame = function assignQuestionsToGame(game) {
 			var deffered = $q.defer();
 			ref.child('questions').once('value', function(snap) {
@@ -118,11 +128,16 @@
 		};
 
 
-		_assignAnsersToPlayers = function assignAnsersToUsers (game) {
+		/**
+		 * Randomly assigns answers to users
+		 * @param  {Firebase Object} game Firebase game object
+		 * @return {Promise}      Result of saving game object
+		 */
+		_assignAnswersToPlayers = function assignAnsersToUsers (game) {
 			ref.child('answers').once('value', function(snap) {
 				var answers = Object.keys(snap.val());
 				game.players.forEach(function() {
-					//loop through all the players and randomly assign them an equal number of answers
+					//TODO - loop through all the players and randomly assign them an equal number of answers
 				});
 				return game.$save();
 			});
