@@ -40,7 +40,7 @@
 
         vm.startGame = function() {
             gameService.startGame(vm.game);
-            $state.go('currentGame.play');
+            //$state.go('currentGame.play');
         };
 
         gotoNewGame = function gotoNewGame() {
@@ -78,7 +78,7 @@
         };
 
         handlerGameChangeEvent = function handlerGameChangeEvent (snap) {  
-            console.log(sanp.val()); 
+            console.log(snap.val()); 
             if(snap.val().started === true) {
                 gameService.getGameRef(gameId).off('value', handlerGameChangeEvent);
                 $state.go('currentGame.play');

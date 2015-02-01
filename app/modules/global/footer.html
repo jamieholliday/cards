@@ -1,7 +1,7 @@
 <footer>
 	<ul class="users">
 		<li ng-repeat="player in currentGame.game.players">
-		<div class="icon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+		<div class="icon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><span class="score">{{player.score}}</span></div>
 		<div class="name">{{player.name}}</div>
 		</li>
 	</ul>

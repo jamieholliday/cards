@@ -3,7 +3,7 @@
 	angular.module('cards')
 	.factory('gameService', registerGame);
 
-	function registerGame($firebase, FIREBASE_URL, localStorageService, guidService) {
+	function registerGame($firebase, FIREBASE_URL, localStorageService, guidService, $q) {
 
 			var createNewGame,
 				createNewPlayer,
@@ -14,6 +14,9 @@
 				_createGame,
 				_createPlayer,
 				_assignPlayerToGame,
+				_assignQuestionsAndAnswers,
+				_assignQuestionsToGame,
+				_assignAnsersToPlayers,
 				ref = new Firebase(FIREBASE_URL);
 
 		/**
@@ -64,7 +67,7 @@
 
 		/**
 		 * Returns user object based on game id and current user in id in LocalStorage
-		 * @param  {Number} game Unique game identifier
+		 * @param  {Firebase Obj} Firefbase game object
 		 * @return {Boolean}      If this player is in game
 		 */
 		getUser = function getUser (game) {
@@ -75,13 +78,54 @@
             return {};	
 		};
 
+		/**
+		 * Gets the game started. Should only get called once on start button click from leader scree
+		 * @param  {Firebase Object} game The firebase game object for this game
+		 */
 		startGame = function startGame (game) {
 			game.started = true;
-			game.$save();
+			game.$save().then(function() {
+				return _assignQuestionsAndAnswers(game);
+			});
 		};
 
+		/**
+		 * Returns a reference to the Firebase game
+		 * @param  {Number} gameId Unique identifier of a game
+		 */
 		getGameRef = function getGameRef(gameId) {
 			return ref.child('/games/' + gameId);
+		};
+
+		_assignQuestionsAndAnswers = function assignQuestionsAndAnswers (game) {
+			return _assignQuestionsToGame(game)
+			.then(function() {
+				return _assignAnsersToPlayers(game);
+			});
+
+		};
+
+		_assignQuestionsToGame = function assignQuestionsToGame(game) {
+			var deffered = $q.defer();
+			ref.child('questions').once('value', function(snap) {
+				game.questions = snap.val();
+				game.$save()
+				.then(function() {
+					deffered.resolve();
+				});
+			});
+			return deffered.promise;
+		};
+
+
+		_assignAnsersToPlayers = function assignAnsersToUsers (game) {
+			ref.child('answers').once('value', function(snap) {
+				var answers = Object.keys(snap.val());
+				game.players.forEach(function() {
+					//loop through all the players and randomly assign them an equal number of answers
+				});
+				return game.$save();
+			});
 		};
 
 		/**
