@@ -3,12 +3,13 @@
 	angular.module('cards')
 	.factory('gameService', gameService);
 
-	function gameService($firebase, FIREBASE_URL, localStorageService, guidService, $q) {
+	function gameService($firebase, FIREBASE_URL, localStorageService, guidService, $q, utilsService) {
 
 			var createNewGame,
 				createNewPlayer,
 				getGame,
-				getUser,
+				getPlayers,
+				getPlayerId,
 				getGameRef,
 				startGame,
 				_createGame,
@@ -17,7 +18,6 @@
 				_assignQuestionsAndAnswers,
 				_assignQuestionsToGame,
 				_assignAnswersToPlayers,
-				_getRandomNumberBetween,
 				ref = new Firebase(FIREBASE_URL);
 
 		/**
@@ -66,26 +66,32 @@
             .$asObject();
 		};
 
+		getPlayers = function getPlayers (gameId) {
+			return $firebase(ref.child('games/' + gameId + '/players'))
+			.$asArray();
+		};
+
 		/**
 		 * Returns user object based on game id and current user in id in LocalStorage
 		 * @param  {Firebase Obj} Firefbase game object
-		 * @return {Boolean}      If this player is in game
+		 * @return {Object}      User Object or empty Object
 		 */
-		getUser = function getUser (game) {
+		getPlayerId = function getPlayerId (game) {
 			var playerId = localStorageService.get('playerId');
             if(game && playerId && game.players[playerId]) {
-                return game.players[playerId];
+                return playerId;
             } 
             return {};	
 		};
 
 		/**
-		 * Gets the game started. Should only get called once on start button click from leader scree
+		 * Gets the game started. Should only get called once on start button click from leader screen
 		 * @param  {Firebase Object} game The firebase game object for this game
 		 */
 		startGame = function startGame (game) {
 			game.started = true;
-			game.$save().then(function() {
+			return game.$save()
+			.then(function() {
 				return _assignQuestionsAndAnswers(game);
 			});
 		};
@@ -105,7 +111,7 @@
 		 */
 		_assignQuestionsAndAnswers = function assignQuestionsAndAnswers (game) {
 			return _assignQuestionsToGame(game)
-			.then(function() {
+			.then(function(game) {
 				return _assignAnswersToPlayers(game);
 			});
 		};
@@ -121,7 +127,7 @@
 				game.questions = snap.val();
 				game.$save()
 				.then(function() {
-					deffered.resolve();
+					deffered.resolve(game);
 				});
 			});
 			return deffered.promise;
@@ -133,21 +139,27 @@
 		 * @param  {Firebase Object} game Firebase game object
 		 * @return {Promise}      Result of saving game object
 		 */
-		_assignAnswersToPlayers = function assignAnsersToUsers (game) {
+		_assignAnswersToPlayers = function assignAnswersToPlayers (game) {
+			var answers,
+				answerKeys,
+				numberOfPlayers,
+				numberOfAnswers,	
+				answersPerPlayer,
+				i;
+
 			ref.child('answers').once('value', function(snap) {
-				var answers = snap.val(),
-					answerKeys = Object.keys(answers),
-					numberOfPlayers = Object.keys(game.players).length,
-					numberOfAnswers = answerKeys.length,	
-					answersPerPlayer = Math.floor(numberOfAnswers / numberOfPlayers),
-					i;
+				answers = snap.val();
+				answerKeys = Object.keys(answers);
+				numberOfPlayers = Object.keys(game.players).length;
+				numberOfAnswers = answerKeys.length;
+				answersPerPlayer = Math.floor(numberOfAnswers / numberOfPlayers);
 
 				Object.keys(game.players).forEach(function(player, i) {
 					var playerAnswers = [],
 						answerId,
 						position;
 					for (i = 0; i < answersPerPlayer; i++) {
-						position = _getRandomNumberBetween(0, answerKeys.length - 1);
+						position = utilsService.getRandomNumberBetween(0, answerKeys.length - 1);
 						answerId = answerKeys[position];
 						playerAnswers.push(answers[answerId]);
 						answerKeys.splice(position, 1);
@@ -156,10 +168,7 @@
 				});
 				return game.$save();
 			});
-		};
-
-		_getRandomNumberBetween = function getRandomNumberBetween(start, end) {
-			return Math.floor(Math.random() * end) + start;
+			return true;
 		};
 
 		/**
@@ -193,7 +202,8 @@
 		        name: name,
 		        score: 0,
 		        isCurrent: isCurrent,
-		        isLeader: isLeader
+		        isLeader: isLeader,
+		        id: playerGuid
 			});
 
 		};
@@ -202,7 +212,8 @@
 			createNewGame: createNewGame,
 			createNewPlayer: createNewPlayer,
 			getGame: getGame,
-			getUser: getUser,
+			getPlayers: getPlayers,
+			getPlayerId: getPlayerId,
 			startGame: startGame,
 			getGameRef: getGameRef
 		};

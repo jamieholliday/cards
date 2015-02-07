@@ -1,2 +1,24 @@
 <!-- <button ng-click="currentGame.startGame()">Test</button> -->
-{{currentGame.isCurrent}}
+<div class="container play-game">
+    <div class="row full-height">
+        <div class="col-md-12">
+			<div ng-if="currentGame.player.isCurrent" class="player-question">
+				<div class="question-container">
+					<h1 class="question">{{currentGame.game.currentQuestion}}</h1>
+				</div>
+				<ul ng-if="currentGame.game" class="answers">
+					<li ng-repeat="player in currentGame.game.players" ng-if="!player.isCurrent" ng-click="currentGame.selectWinningAnswer(player)">
+						{{player.selectedAnswer.answerText}}
+					</li>
+				</ul>
+			</div>
+			<div ng-if="!currentGame.player.isCurrent" class="player-answer">
+				<h1 class="question">{{currentGame.game.currentQuestion}}</h1>
+				<ul class="answers">
+					<li ng-repeat="(key, answer) in currentGame.game.players[currentGame.player.id].answers" ng-click="currentGame.selectAnswer(key)" ng-class="{'selected': key === currentGame.game.players[currentGame.player.id].selectedAnswer.answerKey}">{{answer}}</li>
+				</ul>
+			</div>
+        </div>
+    </div>
+</div>
+

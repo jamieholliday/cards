@@ -1,8 +1,7 @@
 <div class="container current-game">
     <div class="row">
         <div class="col-md-12">
-            <div ng-if="currentGame.isLeader">
-            leader stuff
+            <div ng-if="currentGame.player.isLeader">
                 <div ng-if="currentGame.showStartButton() && !currentGame.game.started">
                     <button class="btn btn-success" ng-click="currentGame.startGame()">Start game </button>
                 </div>
@@ -10,7 +9,7 @@
                     waiting for new players
                 </div>
             </div>
-            <div ng-if="!currentGame.isLeader">
+            <div ng-if="!currentGame.player.isLeader">
                 <div ng-if="!currentGame.game.started">
                     Waiting for game to start
                 </div>

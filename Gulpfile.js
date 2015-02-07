@@ -1,4 +1,4 @@
-(function(){
+;(function(){
     'use strict';
     
     var gulp        = require('gulp'),
@@ -17,6 +17,7 @@
     
     paths = {
         js : [
+            'app/vendor/underscore/underscore.js',
             'app/vendor/angular/angular.js',
             'app/vendor/angular-ui-router/release/angular-ui-router.js',
             'app/vendor/firebase/firebase.js',
@@ -45,7 +46,8 @@
     gulp.task('browser-sync', function() {
         browserSync({
             server: {
-                baseDir: './public'
+                baseDir: './public',
+                ghostMode: false
             }
         });
     });
@@ -89,4 +91,4 @@
             .pipe(gulp.dest('public/views/'))
             .pipe(reload({stream:true}));
     });
-})()
+})();

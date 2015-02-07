@@ -5,3 +5,45 @@
 		color: $mid-grey;
 	}
 }
+
+.play-game {
+	h1 {
+		margin: 0;
+		font-size: 4rem;
+		line-height: 5rem;
+	}
+
+	.player-question .question-container,
+	.player-answer .question {
+		background: darken($dark-grey, 20%);
+		color: #fff;
+		margin: 20px 0 40px;
+		width: 100%;
+		padding: 50px;
+		text-align: center;
+		border-radius: 30px;
+	}
+
+	.player-answer .question {
+		background: $dark-grey;
+	}
+
+	.answers {
+		padding: 0;
+
+		li {
+			list-style: none;
+			padding: 20px;
+			background: #fff;
+			margin: 10px 0;
+			border-radius: 10px;
+			color: $dark-grey;
+			border: 1px solid lighten($dark-grey, 60%);
+
+			&.selected {
+				background: $mid-grey;
+				color: #fff;
+			}
+		}
+	}
+}
